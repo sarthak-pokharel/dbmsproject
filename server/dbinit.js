@@ -34,6 +34,7 @@ const DB_CONFIG = {
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root', 
     password: process.env.DB_PASSWORD || '',
+    port: process.env.DB_PORT || 3306,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -57,7 +58,8 @@ async function initializeDatabase() {
     const tempConnection = await mysql.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD
+        password: process.env.DB_PASSWORD,
+        port: process.env.DB_PORT || 3306
     });
 
     try {
