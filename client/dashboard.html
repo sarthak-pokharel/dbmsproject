@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCT Inventory Management System - Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .stat-card {
+            transition: transform 0.2s;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            position: relative;
+            min-height: 300px;
+            height: auto;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+        }
+        .status-functional {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-maintenance {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-retired {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .mini-chart {
+            height: 60px;
+            width: 120px;
+            margin-left: auto;
+        }
+        .room-card {
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .equipment-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">BCT Inventory</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="computers.html">Computers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="rooms.html">Rooms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="smartboards.html">Smart Boards</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="lab-utilities.html">Lab Utilities</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutBtn">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4">
+        <!-- Overview Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card bg-primary text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Computers</h6>
+                                <h2 class="mt-2 mb-0" id="computerTotal">-</h2>
+                                <p class="small mb-0">Total Devices</p>
+                            </div>
+                            <div class="text-end">
+                                <canvas id="computerStatusMini" class="mini-chart"></canvas>
+                                <small class="d-block mt-2">
+                                    <span id="computerFunctional">-</span> Functional
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-success text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Rooms</h6>
+                                <h2 class="mt-2 mb-0" id="roomTotal">-</h2>
+                                <p class="small mb-0">Total Spaces</p>
+                            </div>
+                            <div class="text-end">
+                                <canvas id="roomTypeMini" class="mini-chart"></canvas>
+                                <small class="d-block mt-2">
+                                    <span id="roomTypes">-</span> Types
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-info text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Smart Boards</h6>
+                                <h2 class="mt-2 mb-0" id="smartboardTotal">-</h2>
+                                <p class="small mb-0">Total Boards</p>
+                            </div>
+                            <div class="text-end">
+                                <canvas id="smartboardStatusMini" class="mini-chart"></canvas>
+                                <small class="d-block mt-2">
+                                    <span id="smartboardFunctional">-</span> Functional
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-warning text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Lab Utilities</h6>
+                                <h2 class="mt-2 mb-0" id="utilityTotal">-</h2>
+                                <p class="small mb-0">Total Items</p>
+                            </div>
+                            <div class="text-end">
+                                <canvas id="utilityStatusMini" class="mini-chart"></canvas>
+                                <small class="d-block mt-2">
+                                    <span id="utilityQuantity">-</span> Units
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Equipment Installation Timeline</h5>
+                        <div class="chart-container">
+                            <canvas id="timelineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Status Distribution</h5>
+                        <div class="chart-container">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Room Utilization Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Room Utilization</h5>
+                        <div class="row" id="roomUtilizationContainer">
+                            <!-- Room cards will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Recent Activity</h5>
+                        <ul class="nav nav-tabs" id="recentTabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="computers-tab" data-bs-toggle="tab" href="#computers" role="tab">
+                                    <i class="fas fa-desktop me-2"></i>Computers
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="rooms-tab" data-bs-toggle="tab" href="#rooms" role="tab">
+                                    <i class="fas fa-door-open me-2"></i>Rooms
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="smartboards-tab" data-bs-toggle="tab" href="#smartboards" role="tab">
+                                    <i class="fas fa-chalkboard me-2"></i>Smart Boards
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="utilities-tab" data-bs-toggle="tab" href="#utilities" role="tab">
+                                    <i class="fas fa-tools me-2"></i>Lab Utilities
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content mt-3" id="recentTabsContent">
+                            <div class="tab-pane fade show active" id="computers" role="tabpanel">
+                                <table class="table table-striped" id="computersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Label</th>
+                                            <th>Room</th>
+                                            <th>Category</th>
+                                            <th>Status</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="rooms" role="tabpanel">
+                                <table class="table table-striped" id="roomsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Label</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="smartboards" role="tabpanel">
+                                <table class="table table-striped" id="smartboardsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Model ID</th>
+                                            <th>Room</th>
+                                            <th>Status</th>
+                                            <th>Install Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="utilities" role="tabpanel">
+                                <table class="table table-striped" id="utilitiesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Label</th>
+                                            <th>Room</th>
+                                            <th>Status</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html> 
