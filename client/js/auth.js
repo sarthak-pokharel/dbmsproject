@@ -3,6 +3,11 @@ class Auth {
         this.token = localStorage.getItem('token');
         this.user = JSON.parse(localStorage.getItem('user') || 'null');
         this.setupEventListeners();
+        
+        // Redirect if already logged in
+        if (this.isAuthenticated() && window.location.pathname === '/') {
+            window.location.href = '/dashboard.html';
+        }
     }
 
     setupEventListeners() {
@@ -45,18 +50,8 @@ class Auth {
                 this.user = response.data.user;
                 localStorage.setItem('user', JSON.stringify(this.user));
                 
-                // Update user display
-                $('#userDisplay').text(this.user.name || this.user.username);
-                
-                // Hide login, show dashboard
-                $('#loginContainer').addClass('d-none');
-                $('#dashboardContainer').removeClass('d-none');
-                
-                // Clear form
-                $('#loginForm')[0].reset();
-                
-                // Trigger initial data load
-                $(document).trigger('auth:login');
+                // Redirect to dashboard
+                window.location.href = '/dashboard.html';
             }
         } catch (error) {
             console.error('Login error:', error);
@@ -99,9 +94,8 @@ class Auth {
         localStorage.removeItem('user');
         this.user = null;
         
-        // Show login, hide dashboard
-        $('#dashboardContainer').addClass('d-none');
-        $('#loginContainer').removeClass('d-none');
+        // Redirect to login page
+        window.location.href = '/';
         
         // Trigger logout event
         $(document).trigger('auth:logout');
