@@ -1,6 +1,6 @@
 const config = {
     // API Base URL
-    apiBaseUrl: 'http://localhost:7777/api',
+    apiBaseUrl: `${window.location.protocol}//${window.location.host}/api`,
     
     // API Endpoints
     endpoints: {
