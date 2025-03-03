@@ -60,11 +60,14 @@ npm install
 
 1. Create a `.env` file in the server directory with the following variables:
 ```bash
-PORT=7777
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=
 DB_NAME=departmentinventory
+DB_PORT=3306
+
+PORT=7777
+
 ```
 
 ## Database Setup
