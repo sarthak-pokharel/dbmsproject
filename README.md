@@ -41,6 +41,7 @@ project-root/
 ## Prerequisites
 - Node.js (v14 or higher recommended)
 - npm (Node Package Manager)
+- MySQL (v8.0 or higher recommended)
 
 ## Installation
 
@@ -49,7 +50,6 @@ project-root/
 git clone <repository-url>
 cd <project-directory>
 ```
-
 2. Install backend dependencies:
 ```bash
 cd server
@@ -86,9 +86,7 @@ This will initialize the database schema and create necessary tables.
 ```bash
 cd server
 npm start
-```
-
-2. Access the application:
+```2. Access the application:
 - Frontend Dashboard: http://localhost:7777/dashboard.html
 - API Base URL: http://localhost:7777/api
 
@@ -112,3 +110,6 @@ All API routes are prefixed with `/api`
 ### Frontend
 - Static HTML/CSS/JavaScript files served from the `client` directory
 - Dashboard available at `/dashboard.html`
+
+
+
