@@ -58,11 +58,27 @@ npm install
 
 ## Configuration
 
-1. Create a `.env` file in the server directory:
+1. Create a `.env` file in the server directory with the following variables:
 ```bash
 PORT=7777
-# Add other environment variables as needed
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=departmentinventory
 ```
+
+## Database Setup
+
+1. Make sure you have MySQL installed and running on your system.
+
+2. Configure your database credentials in the `.env` file as shown above.
+
+3. Run the database setup script:
+```bash
+cd server
+npm run setup
+```
+This will initialize the database schema and create necessary tables.
 
 ## Usage
 
