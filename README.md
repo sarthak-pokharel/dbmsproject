@@ -15,6 +15,7 @@ Brief description of your project goes here.
 This is a full-stack web application built with Express.js backend and a static frontend client. The application serves static files and provides API endpoints for data management.
 
 ## Project Structure
+```
 project-root/
 ├── client/                  # Frontend static files
 │   ├── dashboard.html       # Main dashboard page
@@ -42,6 +43,7 @@ project-root/
 │   ├── package-lock.json  # Locked dependencies
 │   └── .env               # Environment variables
 └── README.md              # Project documentation
+```
 
 ## Prerequisites
 - Node.js (v14 or higher recommended)
