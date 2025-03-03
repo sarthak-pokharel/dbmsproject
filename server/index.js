@@ -30,5 +30,5 @@ app.use('/api', apiRouter);
 
 // Start server
 app.listen(port, () => {
-  console.log(`go here http://127.0.0.1:7777/dashboard.html`);
+  console.log(`go here http://127.0.0.1:${port}/dashboard.html`);
 });
