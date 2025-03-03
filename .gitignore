@@ -1,6 +1,6 @@
 
-uploads/
-server/uploads/
+uploads/*
+server/uploads/*
 .env
 node_modules/
 server/node_modules/
