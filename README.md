@@ -17,32 +17,25 @@ This is a full-stack web application built with Express.js backend and a static 
 ## Project Structure
 ```
 project-root/
-├── client/                  # Frontend static files
-│   ├── dashboard.html       # Main dashboard page
-│   ├── css/                # Stylesheets
-│   │   └── style.css       # Main stylesheet
-│   └── js/                 # JavaScript files
-│       ├── main.js         # Main JavaScript logic
-│       └── api.js          # API interaction functions
-├── server/                 # Backend server code
-│   ├── index.js           # Main server entry point
-│   ├── dbinit.js          # Database initialization
-│   ├── api/               # API routes
-│   │   ├── main.js        # Main API router
-│   │   ├── items.js       # Items endpoints
-│   │   └── users.js       # User management endpoints
-│   ├── db/                # Database related files
-│   │   ├── connection.js  # Database connection setup
-│   │   └── queries.js     # SQL query definitions
-│   ├── middleware/        # Custom middleware
-│   │   ├── auth.js        # Authentication middleware
-│   │   └── validation.js  # Request validation
-│   ├── utils/             # Utility functions
-│   │   └── helpers.js     # Helper functions
-│   ├── package.json       # Node dependencies
-│   ├── package-lock.json  # Locked dependencies
-│   └── .env               # Environment variables
-└── README.md              # Project documentation
+├── client/                     # Frontend static files
+│   ├── index.html             # Main entry page
+│   ├── dashboard.html         # Dashboard page
+│   ├── categories.html        # Categories management page
+│   ├── computers.html         # Computers inventory page
+│   ├── lab-utilities.html     # Lab utilities page
+│   ├── rooms.html            # Rooms management page
+│   ├── smartboards.html      # Smartboards inventory page
+│   ├── css/                  # Stylesheets directory
+│   └── js/                   # JavaScript files directory
+├── server/                    # Backend server code
+│   ├── index.js              # Main server entry point
+│   ├── dbinit.js            # Database initialization
+│   ├── api/                  # API routes
+│   ├── uploads/             # File uploads directory
+│   ├── package.json         # Node dependencies
+│   ├── package-lock.json    # Locked dependencies
+│   └── .env                 # Environment variables
+└── README.md                 # Project documentation
 ```
 
 ## Prerequisites
