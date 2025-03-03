@@ -1,9 +1,31 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Categories
+ *   description: Computer category management endpoints
+ */
+
 import express from 'express';
 import { runQuery } from './db.js';
 
+/**
+ * Express router to mount computer category related functions on.
+ * @type {object}
+ * @const
+ */
 const router = express.Router();
 
-// Route to create a new computer category
+/**
+ * Create a new computer category
+ * @route POST /api/category/create
+ * @param {object} req.body - Category creation payload
+ * @param {string} req.body.label - Category name/identifier
+ * @param {string} req.body.model_release_date - Release date of the model
+ * @param {string} req.body.description - Detailed description of the category
+ * @returns {object} 201 - Created category object
+ * @throws {object} 400 - Missing required fields
+ * @throws {object} 500 - Server error
+ */
 router.post('/create', async (req, res) => {
     const { label, model_release_date, description } = req.body;
 
@@ -22,7 +44,19 @@ router.post('/create', async (req, res) => {
     }
 });
 
-// Route to edit a computer category
+/**
+ * Update an existing computer category
+ * @route PUT /api/category/edit/{id}
+ * @param {number} req.params.id - Category ID to update
+ * @param {object} req.body - Category update payload
+ * @param {string} [req.body.label] - New category name/identifier
+ * @param {string} [req.body.model_release_date] - New release date
+ * @param {string} [req.body.description] - New description
+ * @returns {object} 200 - Success message
+ * @throws {object} 400 - Invalid input
+ * @throws {object} 404 - Category not found
+ * @throws {object} 500 - Server error
+ */
 router.put('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const { label, model_release_date, description } = req.body;
@@ -76,7 +110,15 @@ router.put('/edit/:id', async (req, res) => {
     }
 });
 
-// Route to delete a computer category
+/**
+ * Delete a computer category
+ * @route DELETE /api/category/delete/{id}
+ * @param {number} req.params.id - Category ID to delete
+ * @returns {object} 200 - Success message
+ * @throws {object} 400 - Category has associated computers
+ * @throws {object} 404 - Category not found
+ * @throws {object} 500 - Server error
+ */
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -109,7 +151,12 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-// Route to get all computer categories
+/**
+ * Get all computer categories
+ * @route GET /api/category/all
+ * @returns {Array<object>} 200 - List of all categories
+ * @throws {object} 500 - Server error
+ */
 router.get('/all', async (req, res) => {
     try {
         const query = 'SELECT * FROM computer_cat ORDER BY label';
@@ -121,7 +168,14 @@ router.get('/all', async (req, res) => {
     }
 });
 
-// Route to get a specific computer category by ID
+/**
+ * Get a specific computer category by ID
+ * @route GET /api/category/{id}
+ * @param {number} req.params.id - Category ID to fetch
+ * @returns {object} 200 - Category object
+ * @throws {object} 404 - Category not found
+ * @throws {object} 500 - Server error
+ */
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     
@@ -140,7 +194,14 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Route to get computers by category
+/**
+ * Get all computers in a specific category
+ * @route GET /api/category/{id}/computers
+ * @param {number} req.params.id - Category ID to fetch computers for
+ * @returns {object} 200 - Category details and associated computers
+ * @throws {object} 404 - Category not found
+ * @throws {object} 500 - Server error
+ */
 router.get('/:id/computers', async (req, res) => {
     const { id } = req.params;
     

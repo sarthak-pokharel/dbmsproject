@@ -1,3 +1,10 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Rooms
+ *   description: Room management endpoints with image upload support
+ */
+
 import express from 'express';
 import { runQuery } from './db.js';
 import multer from 'multer';
@@ -5,15 +12,26 @@ import path from 'path';
 import crypto from 'crypto';
 import fs from 'fs';
 
+/**
+ * Express router to mount room related functions on.
+ * @type {object}
+ * @const
+ */
 const router = express.Router();
 
-// Ensure uploads directory exists
+/**
+ * Configuration for file uploads
+ * @private
+ */
 const uploadsDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configure multer for file upload
+/**
+ * Multer storage configuration
+ * @private
+ */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -25,6 +43,10 @@ const storage = multer.diskStorage({
     }
 });
 
+/**
+ * Multer upload configuration
+ * @private
+ */
 const upload = multer({
     storage: storage,
     limits: {
@@ -42,7 +64,18 @@ const upload = multer({
     }
 });
 
-// Route to create a new room
+/**
+ * Create a new room
+ * @route POST /api/room/create
+ * @param {object} req.body - Room creation payload
+ * @param {string} req.body.label - Room identifier/name
+ * @param {string} req.body.type - Type of room
+ * @param {string} [req.body.status=functional] - Room status
+ * @param {File} [req.file] - Room image file (max 5MB, jpg/png/gif)
+ * @returns {object} 201 - Created room object
+ * @throws {object} 400 - Missing required fields
+ * @throws {object} 500 - Server error
+ */
 router.post('/create', upload.single('image'), async (req, res) => {
     const { label, type, status } = req.body;
 
@@ -72,7 +105,20 @@ router.post('/create', upload.single('image'), async (req, res) => {
     }
 });
 
-// Route to edit a room
+/**
+ * Update an existing room
+ * @route PUT /api/room/edit/{id}
+ * @param {number} req.params.id - Room ID to update
+ * @param {object} req.body - Room update payload
+ * @param {string} [req.body.label] - New room identifier/name
+ * @param {string} [req.body.type] - New room type
+ * @param {string} [req.body.status] - New room status
+ * @param {File} [req.file] - New room image file (max 5MB, jpg/png/gif)
+ * @returns {object} 200 - Success message
+ * @throws {object} 400 - Invalid input
+ * @throws {object} 404 - Room not found
+ * @throws {object} 500 - Server error
+ */
 router.put('/edit/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { label, type, status } = req.body;
@@ -152,7 +198,15 @@ router.put('/edit/:id', upload.single('image'), async (req, res) => {
     }
 });
 
-// Route to delete a room
+/**
+ * Delete a room
+ * @route DELETE /api/room/delete/{id}
+ * @param {number} req.params.id - Room ID to delete
+ * @returns {object} 200 - Success message
+ * @throws {object} 400 - Room has associated items
+ * @throws {object} 404 - Room not found
+ * @throws {object} 500 - Server error
+ */
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -213,7 +267,12 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-// Route to get all rooms
+/**
+ * Get all rooms
+ * @route GET /api/room/all
+ * @returns {Array<object>} 200 - List of all rooms
+ * @throws {object} 500 - Server error
+ */
 router.get('/all', async (req, res) => {
     try {
         const query = 'SELECT * FROM room ORDER BY label';
@@ -225,7 +284,14 @@ router.get('/all', async (req, res) => {
     }
 });
 
-// Route to get a specific room by ID
+/**
+ * Get a specific room by ID
+ * @route GET /api/room/{id}
+ * @param {number} req.params.id - Room ID to fetch
+ * @returns {object} 200 - Room object
+ * @throws {object} 404 - Room not found
+ * @throws {object} 500 - Server error
+ */
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     
@@ -244,7 +310,14 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Route to get a specific room by ID with all its assets
+/**
+ * Get detailed room information including all assets
+ * @route GET /api/room/details/{id}
+ * @param {number} req.params.id - Room ID to fetch details for
+ * @returns {object} 200 - Room object with associated computers, lab utilities, and smart boards
+ * @throws {object} 404 - Room not found
+ * @throws {object} 500 - Server error
+ */
 router.get('/details/:id', async (req, res) => {
     const { id } = req.params;
     

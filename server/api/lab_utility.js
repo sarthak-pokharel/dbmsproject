@@ -1,9 +1,33 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Lab Utilities
+ *   description: Laboratory equipment and utility management endpoints
+ */
+
 import express from 'express';
 import { runQuery } from './db.js';
 
+/**
+ * Express router to mount lab utility related functions on.
+ * @type {object}
+ * @const
+ */
 const router = express.Router();
 
-// Route to create a new lab utility
+/**
+ * Create a new lab utility
+ * @route POST /api/lab-utility/create
+ * @param {object} req.body - Lab utility creation payload
+ * @param {string} req.body.label - Name/identifier of the lab utility
+ * @param {string} req.body.description - Detailed description of the utility
+ * @param {number} req.body.quantity - Number of units available
+ * @param {number} req.body.isassignedto - Room ID where utility is assigned
+ * @param {string} req.body.status - Current status of the utility
+ * @returns {object} 201 - Created lab utility object
+ * @throws {object} 400 - Missing required fields or invalid room
+ * @throws {object} 500 - Server error
+ */
 router.post('/create', async (req, res) => {
     const { label, description, quantity, isassignedto, status } = req.body;
 
@@ -30,7 +54,21 @@ router.post('/create', async (req, res) => {
     }
 });
 
-// Route to edit a lab utility
+/**
+ * Update an existing lab utility
+ * @route PUT /api/lab-utility/edit/{id}
+ * @param {number} req.params.id - Lab utility ID to update
+ * @param {object} req.body - Lab utility update payload
+ * @param {string} [req.body.label] - New name/identifier
+ * @param {string} [req.body.description] - New description
+ * @param {number} [req.body.quantity] - New quantity
+ * @param {number} [req.body.isassignedto] - New room assignment ID
+ * @param {string} [req.body.status] - New status
+ * @returns {object} 200 - Success message
+ * @throws {object} 400 - Invalid input or room
+ * @throws {object} 404 - Lab utility not found
+ * @throws {object} 500 - Server error
+ */
 router.put('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const { label, description, quantity, isassignedto, status } = req.body;
@@ -104,7 +142,14 @@ router.put('/edit/:id', async (req, res) => {
     }
 });
 
-// Route to delete a lab utility
+/**
+ * Delete a lab utility
+ * @route DELETE /api/lab-utility/delete/{id}
+ * @param {number} req.params.id - Lab utility ID to delete
+ * @returns {object} 200 - Success message
+ * @throws {object} 404 - Lab utility not found
+ * @throws {object} 500 - Server error
+ */
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -127,7 +172,12 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-// Route to get all lab utilities
+/**
+ * Get all lab utilities
+ * @route GET /api/lab-utility/all
+ * @returns {Array<object>} 200 - List of all lab utilities with room information
+ * @throws {object} 500 - Server error
+ */
 router.get('/all', async (req, res) => {
     try {
         const query = `
@@ -144,7 +194,14 @@ router.get('/all', async (req, res) => {
     }
 });
 
-// Route to get a specific lab utility by ID
+/**
+ * Get a specific lab utility by ID
+ * @route GET /api/lab-utility/{id}
+ * @param {number} req.params.id - Lab utility ID to fetch
+ * @returns {object} 200 - Lab utility object with room information
+ * @throws {object} 404 - Lab utility not found
+ * @throws {object} 500 - Server error
+ */
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     

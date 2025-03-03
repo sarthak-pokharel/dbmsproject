@@ -1,8 +1,34 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Computers
+ *   description: Computer management endpoints
+ */
+
 import express from 'express';
 import { runQuery } from './db.js'; // Importing the runQuery function
 
+/**
+ * Express router to mount computer related functions on.
+ * @type {object}
+ * @const
+ */
 const router = express.Router();
 
+/**
+ * Create a new computer entry
+ * @route POST /api/computer/create
+ * @param {object} req.body - Computer creation payload
+ * @param {string} req.body.label - Unique identifier/name for the computer
+ * @param {string} [req.body.install_date] - Installation date of the computer
+ * @param {number} req.body.isassignedto - Room ID where computer is assigned
+ * @param {number} req.body.belongstocategory - Category ID of the computer
+ * @param {string} req.body.status - Current status of the computer
+ * @param {number} [req.body.quantity=1] - Quantity of computers (default: 1)
+ * @returns {object} 201 - Created computer object
+ * @throws {object} 400 - Missing required fields
+ * @throws {object} 500 - Server error
+ */
 router.post('/create', async (req, res) => {
     const { label, install_date, isassignedto, belongstocategory, status, quantity } = req.body;
     if (!label || !isassignedto || !belongstocategory || !status) {
@@ -31,7 +57,22 @@ router.post('/create', async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
-// Route to edit a computer
+
+/**
+ * Update an existing computer
+ * @route PUT /api/computer/edit/{id}
+ * @param {number} req.params.id - Computer ID to update
+ * @param {object} req.body - Computer update payload
+ * @param {string} [req.body.install_date] - New installation date
+ * @param {number} [req.body.isassignedto] - New room assignment ID
+ * @param {number} [req.body.belongstocategory] - New category ID
+ * @param {string} [req.body.status] - New status
+ * @param {number} [req.body.quantity] - New quantity
+ * @returns {object} 200 - Success message
+ * @throws {object} 400 - Invalid input
+ * @throws {object} 404 - Computer not found
+ * @throws {object} 500 - Server error
+ */
 router.put('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const { install_date, isassignedto, belongstocategory, status, quantity } = req.body;
@@ -91,7 +132,14 @@ router.put('/edit/:id', async (req, res) => {
     }
 });
 
-// Route to delete a computer
+/**
+ * Delete a computer
+ * @route DELETE /api/computer/delete/{id}
+ * @param {number} req.params.id - Computer ID to delete
+ * @returns {object} 200 - Success message
+ * @throws {object} 404 - Computer not found
+ * @throws {object} 500 - Server error
+ */
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -114,8 +162,12 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-
-// Route to get all computers
+/**
+ * Get all computers
+ * @route GET /api/computer/all
+ * @returns {Array<object>} 200 - List of all computers
+ * @throws {object} 500 - Server error
+ */
 router.get('/all', async (req, res) => {
     try {
         const query = 'SELECT * FROM computer ORDER BY id';
@@ -127,7 +179,14 @@ router.get('/all', async (req, res) => {
     }
 });
 
-// Route to get a specific computer by ID
+/**
+ * Get a specific computer by ID
+ * @route GET /api/computer/{id}
+ * @param {number} req.params.id - Computer ID to fetch
+ * @returns {object} 200 - Computer object
+ * @throws {object} 404 - Computer not found
+ * @throws {object} 500 - Server error
+ */
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     
@@ -145,6 +204,5 @@ router.get('/:id', async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
-
 
 export default router;

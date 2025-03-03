@@ -1,3 +1,10 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Smart Boards
+ *   description: Smart board management endpoints with image upload support
+ */
+
 import express from 'express';
 import { runQuery } from './db.js';
 import multer from 'multer';
@@ -5,15 +12,26 @@ import path from 'path';
 import crypto from 'crypto';
 import fs from 'fs';
 
+/**
+ * Express router to mount smart board related functions on.
+ * @type {object}
+ * @const
+ */
 const router = express.Router();
 
-// Ensure uploads directory exists
+/**
+ * Configuration for file uploads
+ * @private
+ */
 const uploadsDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configure multer for file upload
+/**
+ * Multer storage configuration
+ * @private
+ */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -25,6 +43,10 @@ const storage = multer.diskStorage({
     }
 });
 
+/**
+ * Multer upload configuration
+ * @private
+ */
 const upload = multer({
     storage: storage,
     limits: {
@@ -42,7 +64,17 @@ const upload = multer({
     }
 });
 
-// Route to create a new smart board
+/**
+ * Create a new smart board
+ * @route POST /api/smart-board/create
+ * @param {object} req.body - Smart board creation payload
+ * @param {string} req.body.model_id - Model identifier of the smart board
+ * @param {number} req.body.room_id - Room ID where smart board is assigned
+ * @param {string} req.body.status - Current status of the smart board
+ * @returns {object} 201 - Created smart board object with room details
+ * @throws {object} 400 - Missing required fields or invalid room
+ * @throws {object} 500 - Server error
+ */
 router.post('/create', async (req, res) => {
     const { model_id, room_id, status } = req.body;
 
@@ -82,7 +114,20 @@ router.post('/create', async (req, res) => {
     }
 });
 
-// Route to edit a smart board
+/**
+ * Update an existing smart board
+ * @route PUT /api/smart-board/edit/{id}
+ * @param {number} req.params.id - Smart board ID to update
+ * @param {object} req.body - Smart board update payload
+ * @param {string} [req.body.model_id] - New model identifier
+ * @param {number} [req.body.room_id] - New room assignment ID
+ * @param {string} [req.body.status] - New status
+ * @param {File} [req.file] - New smart board image (max 5MB, jpg/png/gif)
+ * @returns {object} 200 - Updated smart board object with room details
+ * @throws {object} 400 - Invalid input or room
+ * @throws {object} 404 - Smart board not found
+ * @throws {object} 500 - Server error
+ */
 router.put('/edit/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { model_id, room_id, status } = req.body;
@@ -184,7 +229,14 @@ router.put('/edit/:id', upload.single('image'), async (req, res) => {
     }
 });
 
-// Route to delete a smart board
+/**
+ * Delete a smart board
+ * @route DELETE /api/smart-board/delete/{id}
+ * @param {number} req.params.id - Smart board ID to delete
+ * @returns {object} 200 - Success message
+ * @throws {object} 404 - Smart board not found
+ * @throws {object} 500 - Server error
+ */
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -224,7 +276,12 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-// Route to get all smart boards
+/**
+ * Get all smart boards
+ * @route GET /api/smart-board/all
+ * @returns {Array<object>} 200 - List of all smart boards with room information
+ * @throws {object} 500 - Server error
+ */
 router.get('/all', async (req, res) => {
     try {
         const query = `
@@ -241,7 +298,14 @@ router.get('/all', async (req, res) => {
     }
 });
 
-// Route to get a specific smart board by ID
+/**
+ * Get a specific smart board by ID
+ * @route GET /api/smart-board/{id}
+ * @param {number} req.params.id - Smart board ID to fetch
+ * @returns {object} 200 - Smart board object with room information
+ * @throws {object} 404 - Smart board not found
+ * @throws {object} 500 - Server error
+ */
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     

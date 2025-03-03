@@ -1,8 +1,54 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Dashboard
+ *   description: Dashboard analytics and statistics endpoints
+ */
+
 import express from 'express';
 import { runQuery } from './db.js';
 const router = express.Router();
 
-// Get summary statistics for all tables
+/**
+ * Get summary statistics for all inventory items
+ * @route GET /api/dashboard/summary
+ * @returns {object} 200 - Dashboard statistics object containing:
+ *   - computers: Statistics about computer inventory
+ *     - total: Total number of computers
+ *     - uniqueCategories: Number of unique computer categories
+ *     - functionalCount: Number of functional computers
+ *     - maintenanceCount: Number of computers in maintenance
+ *     - retiredCount: Number of retired computers
+ *     - oldestInstallation: Date of oldest computer installation
+ *     - newestInstallation: Date of newest computer installation
+ *   - rooms: Statistics about rooms
+ *     - total: Total number of rooms
+ *     - uniqueTypes: Number of unique room types
+ *     - types: List of all room types
+ *     - functionalCount: Number of active rooms
+ *     - maintenanceCount: Number of rooms in maintenance
+ *     - inactiveCount: Number of inactive rooms
+ *   - smartBoards: Statistics about smart boards
+ *     - total: Total number of smart boards
+ *     - uniqueModels: Number of unique smart board models
+ *     - functionalCount: Number of functional smart boards
+ *     - maintenanceCount: Number of smart boards in maintenance
+ *     - retiredCount: Number of retired smart boards
+ *   - labUtilities: Statistics about lab utilities
+ *     - total: Total number of lab utilities
+ *     - functionalCount: Number of functional utilities
+ *     - maintenanceCount: Number of utilities in maintenance
+ *     - retiredCount: Number of retired utilities
+ *     - averageQuantity: Average quantity per utility item
+ *   - computerCategories: Statistics about computer categories
+ *     - total: Total number of categories
+ *     - uniqueReleaseYears: Number of unique release years
+ *     - oldestModel: Date of oldest model
+ *     - newestModel: Date of newest model
+ *   - timeline: Installation timeline data
+ *   - roomUtilization: Room utilization statistics
+ * @throws {object} 500 - Server error
+ */
 router.get('/summary', async (req, res) => {
     try {
         const stats = {
@@ -200,7 +246,16 @@ router.get('/summary', async (req, res) => {
     }
 });
 
-// Get recent items (last 5 entries from each table)
+/**
+ * Get recent items from all inventory tables
+ * @route GET /api/dashboard/recent
+ * @returns {object} 200 - Recent items object containing:
+ *   - computers: Last 5 computers added (with room and category details)
+ *   - rooms: Last 5 rooms added
+ *   - smartBoards: Last 5 smart boards added (with room details)
+ *   - labUtilities: Last 5 lab utilities added (with room details)
+ * @throws {object} 500 - Server error
+ */
 router.get('/recent', async (req, res) => {
     try {
         const recent = {};
