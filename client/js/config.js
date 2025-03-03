@@ -63,4 +63,11 @@ const config = {
         autoHide: true,
         delay: 3000
     }
-}; 
+};
+
+// API base URL - update this if your API is hosted elsewhere
+const API_BASE_URL = '';
+
+// Configure axios defaults
+axios.defaults.baseURL = API_BASE_URL;
+axios.defaults.headers.common['Content-Type'] = 'application/json'; 

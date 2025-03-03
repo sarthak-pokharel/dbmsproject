@@ -133,4 +133,62 @@ class Auth {
 
 // Create and initialize auth instance
 const auth = new Auth();
-$(document).ready(() => auth.init()); 
+$(document).ready(() => auth.init());
+
+// Handle login form submission
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await axios.post('/api/user/login-validate', {
+            username,
+            password
+        });
+
+        if (response.status === 200) {
+            // Store user data in localStorage
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+            // Redirect to dashboard
+            window.location.href = '/dashboard.html';
+        }
+    } catch (error) {
+        alert(error.response?.data?.message || 'Login failed. Please try again.');
+    }
+});
+
+// Show registration modal
+document.getElementById('showRegisterBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+    registerModal.show();
+});
+
+// Handle registration form submission
+document.getElementById('registerBtn').addEventListener('click', async () => {
+    const form = document.getElementById('registerForm');
+    const formData = new FormData(form);
+    
+    const userData = {
+        username: formData.get('username'),
+        password: formData.get('password'),
+        name: formData.get('name')
+    };
+
+    try {
+        const response = await axios.post('/api/user/register', userData);
+        
+        if (response.status === 201) {
+            alert('Registration successful! Please login.');
+            // Hide the modal
+            const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+            registerModal.hide();
+            // Clear the form
+            form.reset();
+        }
+    } catch (error) {
+        alert(error.response?.data?.message || 'Registration failed. Please try again.');
+    }
+}); 
