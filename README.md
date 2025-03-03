@@ -86,7 +86,9 @@ This will initialize the database schema and create necessary tables.
 ```bash
 cd server
 npm start
-```2. Access the application:
+```
+
+2. Access the application:
 - Frontend Dashboard: http://localhost:7777/dashboard.html
 - API Base URL: http://localhost:7777/api
 
