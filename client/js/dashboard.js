@@ -163,6 +163,7 @@ function updateCharts(data) {
         if (timelineCanvas) {
             const timelineCtx = timelineCanvas.getContext('2d');
             
+            // Extract timeline data for computer installations
             const timelineLabels = data.timeline.computers ? data.timeline.computers.map(item => item.month) : [];
             const timelineData = data.timeline.computers ? data.timeline.computers.map(item => item.installations) : [];
             
@@ -204,16 +205,18 @@ function updateCharts(data) {
         if (statusCanvas) {
             const statusCtx = statusCanvas.getContext('2d');
             
-            const functionalCount = (data.computers?.functionalCount || 0) + 
-                                  (data.smartBoards?.functionalCount || 0) + 
-                                  (data.labUtilities?.functionalCount || 0);
-            const maintenanceCount = (data.computers?.maintenanceCount || 0) + 
-                                   (data.smartBoards?.maintenanceCount || 0) + 
-                                   (data.labUtilities?.maintenanceCount || 0);
-            const retiredCount = (data.computers?.retiredCount || 0) + 
-                               (data.smartBoards?.retiredCount || 0) + 
-                               (data.labUtilities?.retiredCount || 0);
-            
+            // Calculate total counts for each status across all equipment types
+            // Using parseInt to ensure proper number conversion and || 0 for null/undefined fallback
+            const functionalCount = (parseInt(data.computers?.functionalCount) || 0) + 
+                                  (parseInt(data.smartBoards?.functionalCount) || 0) + 
+                                  (parseInt(data.labUtilities?.functionalCount) || 0);
+            const maintenanceCount = (parseInt(data.computers?.maintenanceCount) || 0) + 
+                                   (parseInt(data.smartBoards?.maintenanceCount) || 0) + 
+                                   (parseInt(data.labUtilities?.maintenanceCount) || 0);
+            const retiredCount = (parseInt(data.computers?.retiredCount) || 0) + 
+                               (parseInt(data.smartBoards?.retiredCount) || 0) + 
+                               (parseInt(data.labUtilities?.retiredCount) || 0);
+
             statusChart = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
